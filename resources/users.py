@@ -23,17 +23,7 @@ users = Blueprint('users', 'user')
 #     except models.DoesNotExist:
 #         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 #
-# # show a user route
-# @users.route('/<id>', methods=["GET"])
-# def get_one_user(id):
-#     print(id, 'reserved word?')
-#     user = models.User.get_by_id(id)
-#     print(user.__dict__)
-#     return jsonify(
-#         data=model_to_dict(user),
-#         status= 200,
-#         message="Success single"
-#     ), 200
+
 #
 # # post a new user route!
 # @users.route('/', methods=["POST"])
@@ -52,17 +42,7 @@ users = Blueprint('users', 'user')
 #     user_dict = model_to_dict(user)
 #     return jsonify(data=user_dict, status={"code": 201, "message": "Success"}), 201
 #
-# # update a user route
-# @users.route('/<id>', methods=["PUT"])
-# def update_user(id):
-#     payload = request.get_json()
-#     query = models.User.update(**payload).where(models.User.id==id)
-#     query.execute()
-#     return jsonify(
-#         data=model_to_dict(models.User.get_by_id(id)),
-#         status=200,
-#         message= 'User updated successfully'
-#     ), 200
+
 #
 # # delete route!
 # @users.route('/<id>', methods=["Delete"])
@@ -74,6 +54,38 @@ users = Blueprint('users', 'user')
 #         message= 'User deleted successfully',
 #         status=200
 #     ), 200
+
+# show a user route
+@users.route('/<id>', methods=["GET"])
+def get_one_user(id):
+    user = models.User.get_by_id(id)
+    return jsonify(
+        data=model_to_dict(user),
+        status= 200,
+        message="Success single"
+    ), 200
+
+# update a user route
+@users.route('/<id>', methods=["PUT"])
+def update_user(id):
+    """if user is authorized, update user"""
+    # get and check user
+    the_user = models.User.get_by_id(id)
+    if not current_user.id == the_user.id or current_user.role == 'admin':
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
+    else:
+        payload = request.get_json()
+        # turn it all lowercase
+        payload['email'] = payload['email'].lower()
+        payload['username'] = payload['username'].lower()
+        # run update
+        query = models.User.update(**payload).where(models.User.id==id)
+        query.execute()
+        return jsonify(
+            data=model_to_dict(models.User.get_by_id(id)),
+            status=200,
+            message= 'User updated successfully'
+        ), 200
 
 @users.route('/register', methods=["POST"])
 def register():
