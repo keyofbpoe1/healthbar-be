@@ -44,16 +44,7 @@ users = Blueprint('users', 'user')
 #
 
 #
-# # delete route!
-# @users.route('/<id>', methods=["Delete"])
-# def delete_user(id):
-#     query = models.User.delete().where(models.User.id==id)
-#     query.execute()
-#     return jsonify(
-#         data='User successfully deleted',
-#         message= 'User deleted successfully',
-#         status=200
-#     ), 200
+
 
 # show a user route
 @users.route('/<id>', methods=["GET"])
@@ -67,6 +58,7 @@ def get_one_user(id):
 
 # update a user route
 @users.route('/<id>', methods=["PUT"])
+@login_required
 def update_user(id):
     """if user is authorized, update user"""
     # get and check user
@@ -87,6 +79,7 @@ def update_user(id):
             message= 'User updated successfully'
         ), 200
 
+# register route
 @users.route('/register', methods=["POST"])
 def register():
     """register and login a new user"""
@@ -121,6 +114,7 @@ def register():
             del user_dict['password']
             return jsonify(data=user_dict, status={"code": 201, "message": " Registration Success"})
 
+# login route
 @users.route('/login', methods=["POST"])
 def login():
     """check user credentials and create session"""
@@ -168,3 +162,23 @@ def checksession():
     # print(user_id, file=sys.stdout)
     # return user details
     return jsonify(data={}, status={"code": 200, "message": "Login Check Success"}, curus={"id": current_user.id, "username": current_user.username, "email": current_user.email})
+
+# delete route!
+@users.route('/<id>', methods=["Delete"])
+@login_required
+def delete_user(id):
+    """if user is authorized, delete user"""
+    # get and check user
+    the_user = models.User.get_by_id(id)
+    if not current_user.id == the_user.id or current_user.role == 'admin':
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
+    else:
+        # delete user
+        query = models.User.delete().where(models.User.id==id)
+        query.execute()
+        logout_user()
+        return jsonify(
+            data='User successfully deleted',
+            message= 'User deleted successfully',
+            status=200
+        ), 200
