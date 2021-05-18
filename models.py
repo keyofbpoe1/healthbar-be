@@ -6,9 +6,10 @@ import datetime
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
-import json
-import urllib3
+# import json
+# import urllib3
 from playhouse.postgres_ext import *
+from flask_login import UserMixin
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -17,52 +18,78 @@ load_dotenv(dotenv_path)
 DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
 
 # to connect to sqllite:
-# DATABASE = SqliteDatabase('dogs.sqlite')
+DATABASE = SqliteDatabase('healthbar.sqlite')
 # to connect to postgres, use below and set up postgres db in pgadmin
-DATABASE = PostgresqlDatabase('healthbar_db', user='postgres', password=DATABASE_PASSWORD)
+# DATABASE = PostgresqlDatabase('healthbar_db', user='postgres', password=DATABASE_PASSWORD)
 
-class User(Model):
+class User(UserMixin, Model):
     username = CharField(unique=True)
     password = CharField()
     email = CharField(index=True)
-    bio = TextField()
-    pic = TextField()
+    bio = TextField(null=True)
+    # avatar = TextField(null=True)
     role = CharField()
     class Meta:
         database = DATABASE
         table_name = 'users_tbl'
 
-class Tag(Model):
-    label = CharField()
-    # article = ForeignKeyField(Article, backref='tags')
-    class Meta:
-        database = DATABASE
-        table_name = 'tags_tbl'
 
 class Article(Model):
     author = ForeignKeyField(User, backref='articles')
     category = CharField()
     title = CharField()
     body = TextField()
-    pics = ArrayField(TextField, null=True)
-    tags = ArrayField(ForeignKeyField, {'model': Tag, 'field_type': 'id'}, null=True)
-    endorsements = ArrayField(CharField, null=True)
-    discussion = ArrayField(CharField, null=True)
+    # pics = ArrayField(TextField, null=True)
     class Meta:
         database = DATABASE
         table_name = 'articles_tbl'
 
+class Tag(Model):
+    tag = CharField()
+    class Meta:
+        database = DATABASE
+        table_name = 'tags_tbl'
+
+class Tagjunction(Model):
+    tag = ForeignKeyField(User, backref='tags')
+    article = ForeignKeyField(Article, backref='tags')
+    class Meta:
+        database = DATABASE
+        table_name = 'tagjunction_tbl'
+
 class Discussion(Model):
-    author = ForeignKeyField(User)
-    body = TextField()
-    article = ForeignKeyField(Article, backref='discussion')
+    author = ForeignKeyField(User, backref='discussions')
+    article = ForeignKeyField(Article, backref='discussions')
+    comment = CharField()
     class Meta:
         database = DATABASE
         table_name = 'discussion_tbl'
 
+class Endorsement(Model):
+    endorser = ForeignKeyField(User, backref= 'endorsements')
+    article = ForeignKeyField(Article, backref='endorsements')
+    class Meta:
+        database = DATABASE
+        table_name = 'endorsements_tbl'
+
+class Pin(Model):
+    pinner = ForeignKeyField(User, backref= 'pins')
+    article = ForeignKeyField(Article, backref='pins')
+    pingroup = CharField()
+    class Meta:
+        database = DATABASE
+        table_name = 'pins_tbl'
+
+class Image(Model):
+    user = ForeignKeyField(User, backref= 'avatar', null=True)
+    article = ForeignKeyField(Article, backref='images', null=True)
+    class Meta:
+        database = DATABASE
+        table_name = 'images_tbl'
+
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([Tag, User, Article, Discussion], safe=True)
+    DATABASE.create_tables([User, Article, Tag, Tagjunction, Discussion, Endorsement, Pin, Image], safe=True)
     print("TABLES Created")
     DATABASE.close()
 
@@ -71,8 +98,10 @@ def initialize():
 # user to article
 # user to discussion
 # article to discussion
+# user to image
+# article to images
 
 # many to many
 #################################
 # articled to tags
-# users to pinned articles 
+# users to pinned articles
