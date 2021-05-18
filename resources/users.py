@@ -13,15 +13,15 @@ from flask_login import login_user, logout_user, current_user, login_manager, lo
 users = Blueprint('users', 'user')
 
 # get users route
-# @users.route('/', methods=["GET"])
-# def get_all_users():
-#     ## find the dogs and change each one to a dictionary into a new array
-#     try:
-#         users = [model_to_dict(user) for user in models.User.select()]
-#         print(users)
-#         return jsonify(data=users, status={"code": 200, "message": "Success"})
-#     except models.DoesNotExist:
-#         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
+@users.route('/', methods=["GET"])
+def get_all_users():
+    ## find the dogs and change each one to a dictionary into a new array
+    try:
+        users = [model_to_dict(user) for user in models.User.select()]
+        print(users)
+        return jsonify(data=users, status={"code": 200, "message": "Success"})
+    except models.DoesNotExist:
+        return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 #
 
 #

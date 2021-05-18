@@ -1,10 +1,10 @@
 # this is our users route!!!
 import models
+import sys
 
 from flask import Blueprint, jsonify, request
-
-# playhouse.shortcuts has a lot of useful peewee tools
 from playhouse.shortcuts import model_to_dict
+from flask_login import current_user, login_manager, login_required
 
 # We can use this as a Python decorator for routing purposes
 # first argument is blueprints name
@@ -36,20 +36,20 @@ def get_all_articles():
 
 # post a new articles route!
 @articles.route('/', methods=["POST"])
+@login_required
 def create_articles():
-    ## see request payload anagolous to req.body in express
-    # plus turning it into json
     payload = request.get_json()
-    print(type(payload), 'payload')
+    payload['author'] = current_user
+    # print(type(payload), 'payload')
     article = models.Article.create(**payload)
     ## see the object
     # print(article.__dict__)
     ## Look at all the methods
     # print(dir(article))
     # Change the model to a dict
-    print(model_to_dict(article), 'model to dict')
+    # print(model_to_dict(article), 'model to dict')
     article_dict = model_to_dict(article)
-    return jsonify(data=article_dict, status={"code": 201, "message": "Success"}), 201
+    return jsonify(data=article_dict, status={"code": 201, "message": "Article Post Success"}), 201
 #
 # # update a user route
 # @users.route('/<id>', methods=["PUT"])
