@@ -1,7 +1,8 @@
 # this is our users route!!!
 import models
+import sys
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from flask_bcrypt import generate_password_hash, check_password_hash
 from playhouse.shortcuts import model_to_dict
 from flask_login import login_user, logout_user, current_user, login_manager, login_required
@@ -82,6 +83,8 @@ def register():
     # turn it all lowercase
     payload['email'] = payload['email'].lower()
     payload['username'] = payload['username'].lower()
+    # set role to user
+    payload['role'] = 'user'
 
     try:
         # Find if the username already exists?
@@ -101,6 +104,7 @@ def register():
 
             # start user session
             login_user(user)
+            user_dict = model_to_dict(user)
             # delete the password before we return it, because we don't need the client to be aware of it
             del user_dict['password']
             return jsonify(data=user_dict, status={"code": 201, "message": " Registration Success"})
@@ -116,7 +120,7 @@ def login():
 
     try:
         # try to find user
-        user = models.User.get(models.User.email == payload['username'])
+        user = models.User.get(models.User.username == payload['username'])
         # if you find the User model convert in to a dictionary so you can edit and jsonify it
         user_dict = model_to_dict(user)
         # check bcrypt hash password
@@ -147,5 +151,8 @@ def logout():
 @login_required
 def checksession():
     """check if current user is logged in"""
+    # user_id = session
+    # print(user_id, file=sys.stderr)
+    # print(user_id, file=sys.stdout)
     # return user details
     return jsonify(data={}, status={"code": 200, "message": "Login Check Success"}, curus={"id": current_user.id, "username": current_user.username, "email": current_user.email})
