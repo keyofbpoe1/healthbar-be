@@ -25,9 +25,13 @@ def get_all_articles():
 # show a sigle article route
 @articles.route('/<id>', methods=["GET"])
 def get_one_article(id):
+    # get article
     article = models.Article.get_by_id(id)
+    # get related discussion
+    discussions = [model_to_dict(discussion) for discussion in article.discussions]
     return jsonify(
         data=model_to_dict(article),
+        discussions=discussions,
         status={"code": 200, "message": "Success single article"}
     ), 200
 

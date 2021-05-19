@@ -32,7 +32,7 @@ def get_one_discussion(id):
         status={"code": 200, "message": "Success single discussion"}
     ), 200
 
-# post a new articles route!
+# post a new discussion route!
 @discussions.route('/', methods=["POST"])
 @login_required
 def create_discussion():
