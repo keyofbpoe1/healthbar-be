@@ -17,6 +17,7 @@ load_dotenv(dotenv_path)
 import models
 from resources.users import users
 from resources.articles import articles
+from resources.discussions import discussions
 
 # cors allow for our db port
 # CORS(dog, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
@@ -63,11 +64,13 @@ def after_request(response):
 # cors for our routes
 CORS(users, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(articles, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
+CORS(discussions, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 
 # get our api on!
 # this hooks up to our router
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(articles, url_prefix='/api/v1/articles')
+app.register_blueprint(discussions, url_prefix='/api/v1/discussions')
 
 # The default URL ends in / ("my-website.com/").
 # @app.route('/')

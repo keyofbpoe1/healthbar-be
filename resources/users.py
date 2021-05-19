@@ -52,8 +52,7 @@ def get_one_user(id):
     user = models.User.get_by_id(id)
     return jsonify(
         data=model_to_dict(user),
-        status= 200,
-        message="Success single user"
+        status={"code": 200, "message": "Success single user"}
     ), 200
 
 # update a user route

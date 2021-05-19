@@ -28,8 +28,7 @@ def get_one_article(id):
     article = models.Article.get_by_id(id)
     return jsonify(
         data=model_to_dict(article),
-        status= 200,
-        message="Success single article"
+        status={"code": 200, "message": "Success single article"}
     ), 200
 
 # post a new articles route!
