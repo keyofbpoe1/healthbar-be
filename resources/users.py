@@ -53,7 +53,7 @@ def get_one_user(id):
     return jsonify(
         data=model_to_dict(user),
         status= 200,
-        message="Success single"
+        message="Success single user"
     ), 200
 
 # update a user route
@@ -75,8 +75,7 @@ def update_user(id):
         query.execute()
         return jsonify(
             data=model_to_dict(models.User.get_by_id(id)),
-            status=200,
-            message= 'User updated successfully'
+            status={"code": 200, "message": "User updated successfully"}
         ), 200
 
 # register route
