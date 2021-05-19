@@ -178,6 +178,5 @@ def delete_user(id):
         logout_user()
         return jsonify(
             data='User successfully deleted',
-            message= 'User deleted successfully',
-            status=200
+            status={"code": 200, "message": "User deleted successfully"}
         ), 200

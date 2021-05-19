@@ -66,14 +66,20 @@ def update_article(id):
             status={"code": 200, "message": "Article updated successfully"}
         ), 200
 
-#
-# # delete route!
-# @users.route('/<id>', methods=["Delete"])
-# def delete_user(id):
-#     query = models.User.delete().where(models.User.id==id)
-#     query.execute()
-#     return jsonify(
-#         data='User successfully deleted',
-#         message= 'User deleted successfully',
-#         status=200
-#     ), 200
+# delete an article route
+@articles.route('/<id>', methods=["DELETE"])
+@login_required
+def delete_article(id):
+    """if user is authorized, delete article"""
+    # get and check article author against current_user
+    the_article = models.Article.get_by_id(id)
+    if not current_user.id == the_article.author.id or current_user.role == 'admin':
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
+    else:
+        # delete article
+        query = models.Article.delete().where(models.Article.id==id)
+        query.execute()
+        return jsonify(
+            data='Article successfully deleted',
+            status={"code": 200, "message": "Article deleted successfully"}
+        ), 200
