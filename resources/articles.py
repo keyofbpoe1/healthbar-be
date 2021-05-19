@@ -22,7 +22,7 @@ def get_all_articles():
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 
-# show a sigle article route
+# show a single article route
 @articles.route('/<id>', methods=["GET"])
 def get_one_article(id):
     # get article
