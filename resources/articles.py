@@ -39,7 +39,7 @@ def search_articles(term):
             (models.Article.author.email ** f'%{term}%') |
             (models.Article.author.email ** f'*{term}*')
         )]
-        return jsonify(data=articles, status={"code": 200, "message": "Success articles"})
+        return jsonify(data=articles, status={"code": 200, "message": "Success search articles"})
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 

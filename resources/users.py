@@ -22,6 +22,21 @@ def get_all_users():
         return jsonify(data=users, status={"code": 200, "message": "Success"})
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
+
+# search users route
+@users.route('/search/<term>', methods=["GET"])
+def search_users(term):
+    ## find all the users containing our query and change each one to a dictionary into a new array
+    try:
+        users = [model_to_dict(user) for user in models.User.select().where(
+            (models.User.username ** f'%{term}%') |
+            (models.User.username ** f'*{term}*') |
+            (models.User.email ** f'%{term}%') |
+            (models.User.email ** f'*{term}*')
+        )]
+        return jsonify(data=users, status={"code": 200, "message": "Success search users"})
+    except models.DoesNotExist:
+        return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 #
 
 #
