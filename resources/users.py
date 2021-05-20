@@ -24,17 +24,18 @@ def get_all_users():
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 
 # search users route
-@users.route('/search/<term>', methods=["GET"])
-def search_users(term):
+@users.route('/search/<term>/<page>/<limit>', methods=["GET"])
+def search_users(term, page, limit):
     ## find all the users containing our query and change each one to a dictionary into a new array
     try:
-        users = [model_to_dict(user) for user in models.User.select().where(
+        users = models.User.select().where(
             (models.User.username ** f'%{term}%') |
             (models.User.username ** f'*{term}*') |
             (models.User.email ** f'%{term}%') |
             (models.User.email ** f'*{term}*')
-        )]
-        return jsonify(data=users, status={"code": 200, "message": "Success search users"})
+        )
+        page_users = [model_to_dict(user) for user in users.paginate(int(page), int(limit))]
+        return jsonify(data=page_users, userlength=users.count(), status={"code": 200, "message": "Success search users"})
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 #

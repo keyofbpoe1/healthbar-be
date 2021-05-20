@@ -23,11 +23,11 @@ def get_all_articles():
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 
 # search articles route
-@articles.route('/search/<term>', methods=["GET"])
-def search_articles(term):
+@articles.route('/search/<term>/<page>/<limit>', methods=["GET"])
+def search_articles(term, page, limit):
     ## find all the articles containing our query and change each one to a dictionary into a new array
     try:
-        articles = [model_to_dict(article) for article in models.Article.select().join(models.User).where(
+        articles = models.Article.select().join(models.User).where(
             (models.Article.title ** f'%{term}%') |
             (models.Article.title ** f'*{term}*') |
             (models.Article.body ** f'%{term}%') |
@@ -38,8 +38,24 @@ def search_articles(term):
             (models.Article.author.username ** f'*{term}*') |
             (models.Article.author.email ** f'%{term}%') |
             (models.Article.author.email ** f'*{term}*')
-        )]
-        return jsonify(data=articles, status={"code": 200, "message": "Success search articles"})
+        )
+
+
+        # [model_to_dict(article) for article in models.Article.select().join(models.User).where(
+        #     (models.Article.title ** f'%{term}%') |
+        #     (models.Article.title ** f'*{term}*') |
+        #     (models.Article.body ** f'%{term}%') |
+        #     (models.Article.body ** f'*{term}*') |
+        #     (models.Article.category ** f'%{term}%') |
+        #     (models.Article.category ** f'*{term}*') |
+        #     (models.Article.author.username ** f'%{term}%') |
+        #     (models.Article.author.username ** f'*{term}*') |
+        #     (models.Article.author.email ** f'%{term}%') |
+        #     (models.Article.author.email ** f'*{term}*')
+        # )]
+
+        page_articles = [model_to_dict(article) for article in articles.paginate(int(page), int(limit))]
+        return jsonify(data=page_articles, artlength=articles.count(), status={"code": 200, "message": "Success search articles"})
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 
