@@ -11,7 +11,7 @@ from flask_login import current_user, login_manager, login_required
 # second argument is it's import_name
 discussions = Blueprint('discussions', 'discussion')
 
-# get articles route
+# get discussions route
 @discussions.route('/', methods=["GET"])
 def get_all_discussions():
     ## find all the discussions and change each one to a dictionary into a new array
@@ -22,7 +22,7 @@ def get_all_discussions():
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 
-# show a sigle article route
+# show a single discussion route
 @discussions.route('/<id>', methods=["GET"])
 def get_one_discussion(id):
     """get and return a single discussion"""
