@@ -49,9 +49,13 @@ def get_all_users():
 # show a user route
 @users.route('/<id>', methods=["GET"])
 def get_one_user(id):
+    # get user
     user = models.User.get_by_id(id)
+    #  get user's articles
+    articles = [model_to_dict(article) for article in user.articles]
     return jsonify(
         data=model_to_dict(user),
+        articles=articles,
         status={"code": 200, "message": "Success single user"}
     ), 200
 
@@ -61,10 +65,11 @@ def get_one_user(id):
 def update_user(id):
     """if user is authorized, update user"""
     # get and check user
+    # print(current_user.role, file=sys.stderr)
+    # print(current_user.role, file=sys.stdout)
     the_user = models.User.get_by_id(id)
-    if not current_user.id == the_user.id or current_user.role == 'admin':
-        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
-    else:
+    if current_user.id == the_user.id or current_user.role == 'admin':
+    # if not current_user.role == 'admin':
         payload = request.get_json()
         # turn it all lowercase
         payload['email'] = payload['email'].lower()
@@ -76,6 +81,8 @@ def update_user(id):
             data=model_to_dict(models.User.get_by_id(id)),
             status={"code": 200, "message": "User updated successfully"}
         ), 200
+    else:
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
 
 # register route
 @users.route('/register', methods=["POST"])
@@ -159,7 +166,7 @@ def checksession():
     # print(user_id, file=sys.stderr)
     # print(user_id, file=sys.stdout)
     # return user details
-    return jsonify(data={}, status={"code": 200, "message": "Login Check Success"}, curus={"id": current_user.id, "username": current_user.username, "email": current_user.email})
+    return jsonify(data={}, status={"code": 200, "message": "Login Check Success"}, curus={"id": current_user.id, "username": current_user.username, "email": current_user.email, "role": current_user.role})
 
 # delete route!
 @users.route('/<id>', methods=["Delete"])
@@ -168,9 +175,7 @@ def delete_user(id):
     """if user is authorized, delete user"""
     # get and check user
     the_user = models.User.get_by_id(id)
-    if not current_user.id == the_user.id or current_user.role == 'admin':
-        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
-    else:
+    if current_user.id == the_user.id or current_user.role == 'admin':
         # delete user
         query = models.User.delete().where(models.User.id==id)
         query.execute()
@@ -179,3 +184,5 @@ def delete_user(id):
             data='User successfully deleted',
             status={"code": 200, "message": "User deleted successfully"}
         ), 200
+    else:
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
