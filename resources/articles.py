@@ -56,9 +56,7 @@ def update_article(id):
     """if user is authorized, update article"""
     # get and check article author against current_user
     the_article = models.Article.get_by_id(id)
-    if not current_user.id == the_article.author.id or current_user.role == 'admin':
-        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
-    else:
+    if current_user.id == the_article.author.id or current_user.role == 'admin':
         # get payload
         payload = request.get_json()
         # run update
@@ -68,6 +66,8 @@ def update_article(id):
             data=model_to_dict(models.Article.get_by_id(id)),
             status={"code": 200, "message": "Article updated successfully"}
         ), 200
+    else:
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
 
 # delete an article route
 @articles.route('/<id>', methods=["DELETE"])
@@ -76,9 +76,7 @@ def delete_article(id):
     """if user is authorized, delete article"""
     # get and check article author against current_user
     the_article = models.Article.get_by_id(id)
-    if not current_user.id == the_article.author.id or current_user.role == 'admin':
-        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
-    else:
+    if current_user.id == the_article.author.id or current_user.role == 'admin':
         # delete article
         query = models.Article.delete().where(models.Article.id==id)
         query.execute()
@@ -86,3 +84,5 @@ def delete_article(id):
             data='Article successfully deleted',
             status={"code": 200, "message": "Article deleted successfully"}
         ), 200
+    else:
+        return jsonify(data={}, status={"code": 403, "message": "Not authorized"})
