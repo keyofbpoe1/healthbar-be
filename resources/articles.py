@@ -14,9 +14,9 @@ articles = Blueprint('articles', 'article')
 # get articles route
 @articles.route('/', methods=["GET"])
 def get_all_articles():
-    ## find all the articles and change each one to a dictionary into a new array
+    ## find all the articles and change each one to a dictionary into a new array paginate by 10 and sort by id descending
     try:
-        articles = [model_to_dict(article) for article in models.Article.select()]
+        articles = [model_to_dict(article) for article in models.Article.select().paginate(1, 10).order_by(models.Article.id.desc())]
         print(articles)
         return jsonify(data=articles, status={"code": 200, "message": "Success articles"})
     except models.DoesNotExist:
