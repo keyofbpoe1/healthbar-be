@@ -39,6 +39,7 @@ class Article(Model):
     category = CharField()
     title = CharField()
     body = TextField()
+    created_date = DateTimeField(default=datetime.datetime.now)
     # pics = ArrayField(TextField, null=True)
     class Meta:
         database = DATABASE

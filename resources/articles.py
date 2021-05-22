@@ -12,12 +12,26 @@ from flask_login import current_user, login_manager, login_required
 articles = Blueprint('articles', 'article')
 
 # get articles route
-@articles.route('/', methods=["GET"])
-def get_all_articles():
+@articles.route('/allarticles/<page>/<limit>', methods=["GET"])
+def get_all_articles(page, limit):
     ## find all the articles and change each one to a dictionary into a new array paginate by 10 and sort by id descending
     try:
-        articles = [model_to_dict(article) for article in models.Article.select().paginate(1, 10).order_by(models.Article.id.desc())]
-        print(articles)
+        articles = models.Article.select()
+        page_articles = [model_to_dict(article) for article in articles.paginate(int(page), int(limit)).order_by(models.Article.id.desc())]
+        return jsonify(data=page_articles, artlength=articles.count(), status={"code": 200, "message": "Success search articles"})
+        return jsonify(data=articles, status={"code": 200, "message": "Success articles"})
+    except models.DoesNotExist:
+        return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
+
+# get users' articles route
+@articles.route('/userarticles/<userid>/<page>/<limit>', methods=["GET"])
+def get_user_articles(userid, page, limit):
+    ## find all the articles and change each one to a dictionary into a new array paginate by 10 and sort by id descending
+    try:
+        user = models.User.get_by_id(userid)
+        articles = user.articles
+        page_articles = [model_to_dict(article) for article in articles.paginate(int(page), int(limit)).order_by(models.Article.id.desc())]
+        return jsonify(data=page_articles, artlength=articles.count(), status={"code": 200, "message": "Success search articles"})
         return jsonify(data=articles, status={"code": 200, "message": "Success articles"})
     except models.DoesNotExist:
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
