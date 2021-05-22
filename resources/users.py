@@ -68,7 +68,7 @@ def get_one_user(id):
     # get user
     user = models.User.get_by_id(id)
     #  get user's articles
-    articles = [model_to_dict(article) for article in user.articles]
+    articles = [model_to_dict(article) for article in user.articles.paginate(1, 10).order_by(models.Article.id.desc())]
     return jsonify(
         data=model_to_dict(user),
         articles=articles,
