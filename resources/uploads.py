@@ -42,17 +42,17 @@ uploads = Blueprint('uploads', 'upload')
 #     return "uploaded"
 
 # post new upload
-@uploads.route('/upload', methods=['POST'])
-def fileUpload():
+@uploads.route('/upload/<folder>/<fname>', methods=['POST'])
+def fileUpload(folder, fname):
     # target=os.path.join(UPLOAD_FOLDER)
     # if not os.path.isdir(target):
     #     os.mkdir(target)
-
     # logger.info("welcome to upload`")
     file = request.files['file']
-    filename = secure_filename(file.filename)
+    split_tup = os.path.splitext(file.filename)
+    filename = secure_filename(fname)
     # destination="/".join([target, filename])
-    destination=os.path.join('uploads', filename)
+    destination=os.path.join(f'uploads/{folder}', f'{filename}{split_tup[1]}')
     # print(destination)
     # print(destination, file=sys.stderr)
     # print(destination, file=sys.stdout)
@@ -64,11 +64,11 @@ def fileUpload():
     #     path=session['uploadFilePath'],
     #     status={"code": 200, "message": "Upload successfull"}
     # ), 200
-    return send_from_directory('uploads', filename)
+    return send_from_directory(f'uploads/{folder}', f'{filename}{split_tup[1]}')
 
 #get uploaded file
-@uploads.route('/upload/<file>', methods=['GET'])
-def file_get(file):
+@uploads.route('/upload/<folder>/<file>', methods=['GET'])
+def file_get(folder, file):
     # target=os.path.join(UPLOAD_FOLDER)
     # if not os.path.isdir(target):
     #     os.mkdir(target)
@@ -89,7 +89,7 @@ def file_get(file):
     #     path=session['uploadFilePath'],
     #     status={"code": 200, "message": "Upload successfull"}
     # ), 200
-    return send_from_directory('uploads', file)
+    return send_from_directory(f'uploads/{folder}', file)
 
 
 # get discussions route

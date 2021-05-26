@@ -77,7 +77,7 @@ def get_one_user(id):
 
 # update a user route
 @users.route('/<id>', methods=["PUT"])
-@login_required
+# @login_required
 def update_user(id):
     """if user is authorized, update user"""
     # get and check user
@@ -90,6 +90,7 @@ def update_user(id):
         # turn it all lowercase
         payload['email'] = payload['email'].lower()
         payload['username'] = payload['username'].lower()
+        # payload['role'] = 'admin'
         # run update
         query = models.User.update(**payload).where(models.User.id==id)
         query.execute()
@@ -109,6 +110,7 @@ def register():
     # turn it all lowercase
     payload['email'] = payload['email'].lower()
     payload['username'] = payload['username'].lower()
+
     # set role to user
     payload['role'] = 'user'
 
@@ -125,6 +127,7 @@ def register():
             # if all good
             # bcrypt hash the password
             payload['password'] = generate_password_hash(payload['password'])
+
             # create user
             user = models.User.create(**payload)
 

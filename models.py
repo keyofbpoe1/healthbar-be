@@ -31,7 +31,7 @@ class User(UserMixin, Model):
     password = CharField()
     email = CharField(index=True)
     bio = TextField(null=True)
-    # avatar = TextField(null=True)
+    user_avatar = CharField()
     role = CharField()
     class Meta:
         database = DATABASE
