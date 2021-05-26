@@ -1,16 +1,17 @@
 # this is our server!
 
 # import flask framework
-from flask import Flask, jsonify, after_this_request, g, request, flash, redirect, url_for
+from flask import Flask, jsonify, after_this_request, g, request, flash, redirect, url_for, session
 # import env vars
 import os
+import sys
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask_cors import CORS
 from flask_login import LoginManager
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/uploads'
+UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 # run to actually import vars from file
@@ -80,21 +81,28 @@ def load_user(user_id):
 #     g.db.close()
 #     return response
 
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-#
-# @app.route('/upload', methods=['POST'])
-# def fileUpload():
-#     target=os.path.join(UPLOAD_FOLDER,'test_docs')
-#     if not os.path.isdir(target):
-#         os.mkdir(target)
-#     logger.info("welcome to upload`")
-#     file = request.files['file']
-#     filename = secure_filename(file.filename)
-#     destination="/".join([target, filename])
-#     file.save(destination)
-#     session['uploadFilePath']=destination
-#     response="Whatever you wish too return"
-#     return response
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/upload', methods=['POST'])
+def fileUpload():
+    target=os.path.join(UPLOAD_FOLDER)
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
+    # logger.info("welcome to upload`")
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    destination="/".join([target, filename])
+    # print(destination)
+    # print(destination, file=sys.stderr)
+    # print(destination, file=sys.stdout)
+    file.save(destination)
+    session['uploadFilePath']=destination
+    response=jsonify(
+        session=session,
+        status={"code": 200, "message": "Whatever you wish too return"}
+    ), 200
+    return response
 
 # cors for our routes
 CORS(users, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
