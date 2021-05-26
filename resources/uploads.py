@@ -3,42 +3,94 @@ import models
 import sys
 import os
 
-from flask import Blueprint, jsonify, request, Flask, flash, redirect, url_for
+from flask import Blueprint, jsonify, request, Flask, flash, redirect, url_for, session, send_from_directory, send_file, safe_join
 from playhouse.shortcuts import model_to_dict
 from flask_login import current_user, login_manager, login_required
 from werkzeug.utils import secure_filename
+from os.path import join, dirname
 
-UPLOAD_FOLDER = '/uploads'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+# UPLOAD_FOLDER = '/uploads'
+# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 # We can use this as a Python decorator for routing purposes
 # first argument is blueprints name
 # second argument is it's import_name
 uploads = Blueprint('uploads', 'upload')
 
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# def allowed_file(filename):
+#     return '.' in filename and \
+#         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@uploads.route('/post', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(uploads.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
-    return "uploaded"
+# @uploads.route('/post', methods=['GET', 'POST'])
+# def upload_file():
+#     if request.method == 'POST':
+#         # check if the post request has the file part
+#         if 'file' not in request.files:
+#             flash('No file part')
+#             return redirect(request.url)
+#         file = request.files['file']
+#         # if user does not select file, browser also
+#         # submit an empty part without filename
+#         if file.filename == '':
+#             flash('No selected file')
+#             return redirect(request.url)
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             file.save(os.path.join(uploads.config['UPLOAD_FOLDER'], filename))
+#             return redirect(url_for('uploaded_file',
+#                                     filename=filename))
+#     return "uploaded"
+
+# post new upload
+@uploads.route('/upload', methods=['POST'])
+def fileUpload():
+    # target=os.path.join(UPLOAD_FOLDER)
+    # if not os.path.isdir(target):
+    #     os.mkdir(target)
+
+    # logger.info("welcome to upload`")
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    # destination="/".join([target, filename])
+    destination=os.path.join('uploads', filename)
+    # print(destination)
+    # print(destination, file=sys.stderr)
+    # print(destination, file=sys.stdout)
+    file.save(destination)
+    session['uploadFilePath']=destination
+    # response=jsonify(
+    #     file=send_from_directory('uploads', filename),
+    #     # url_for('fileUpload'),
+    #     path=session['uploadFilePath'],
+    #     status={"code": 200, "message": "Upload successfull"}
+    # ), 200
+    return send_from_directory('uploads', filename)
+
+#get uploaded file
+@uploads.route('/upload/<file>', methods=['GET'])
+def file_get(file):
+    # target=os.path.join(UPLOAD_FOLDER)
+    # if not os.path.isdir(target):
+    #     os.mkdir(target)
+
+    # logger.info("welcome to upload`")
+    # file = request.files['file']
+    # filename = secure_filename(file.filename)
+    # # destination="/".join([target, filename])
+    # destination=os.path.join('uploads', filename)
+    # # print(destination)
+    # # print(destination, file=sys.stderr)
+    # # print(destination, file=sys.stdout)
+    # file.save(destination)
+    # session['uploadFilePath']=destination
+    # response=jsonify(
+    #     file=send_from_directory('uploads', filename),
+    #     # url_for('fileUpload'),
+    #     path=session['uploadFilePath'],
+    #     status={"code": 200, "message": "Upload successfull"}
+    # ), 200
+    return send_from_directory('uploads', file)
+
 
 # get discussions route
 # @discussions.route('/', methods=["GET"])

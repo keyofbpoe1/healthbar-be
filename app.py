@@ -1,7 +1,8 @@
 # this is our server!
 
 # import flask framework
-from flask import Flask, jsonify, after_this_request, g, request, flash, redirect, url_for, session
+from flask import Flask, jsonify, after_this_request, g, request
+# flash, redirect, url_for, session, send_from_directory, send_file, safe_join
 # import env vars
 import os
 import sys
@@ -9,10 +10,10 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from flask_cors import CORS
 from flask_login import LoginManager
-from werkzeug.utils import secure_filename
+# from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+# UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
+# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 # run to actually import vars from file
 # load_dotenv()
@@ -23,7 +24,7 @@ import models
 from resources.users import users
 from resources.articles import articles
 from resources.discussions import discussions
-# from resources.uploads import uploads
+from resources.uploads import uploads
 
 # cors allow for our db port
 # CORS(dog, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
@@ -81,41 +82,44 @@ def load_user(user_id):
 #     g.db.close()
 #     return response
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-@app.route('/upload', methods=['POST'])
-def fileUpload():
-    target=os.path.join(UPLOAD_FOLDER)
-    if not os.path.isdir(target):
-        os.mkdir(target)
-
-    # logger.info("welcome to upload`")
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    destination="/".join([target, filename])
-    # print(destination)
-    # print(destination, file=sys.stderr)
-    # print(destination, file=sys.stdout)
-    file.save(destination)
-    session['uploadFilePath']=destination
-    response=jsonify(
-        session=session,
-        status={"code": 200, "message": "Whatever you wish too return"}
-    ), 200
-    return response
+# @app.route('/upload', methods=['POST'])
+# def fileUpload():
+#     target=os.path.join(UPLOAD_FOLDER)
+#     if not os.path.isdir(target):
+#         os.mkdir(target)
+#
+#     # logger.info("welcome to upload`")
+#     file = request.files['file']
+#     filename = secure_filename(file.filename)
+#     # destination="/".join([target, filename])
+#     destination=os.path.join('uploads', filename)
+#     # print(destination)
+#     # print(destination, file=sys.stderr)
+#     # print(destination, file=sys.stdout)
+#     file.save(destination)
+#     session['uploadFilePath']=destination
+#     # response=jsonify(
+#     #     file=send_from_directory('uploads', filename),
+#     #     # url_for('fileUpload'),
+#     #     path=session['uploadFilePath'],
+#     #     status={"code": 200, "message": "Upload successfull"}
+#     # ), 200
+#     return send_from_directory('uploads', filename)
 
 # cors for our routes
 CORS(users, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(articles, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(discussions, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
-# CORS(uploads, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
+CORS(uploads, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 
 # get our api on!
 # this hooks up to our router
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(articles, url_prefix='/api/v1/articles')
 app.register_blueprint(discussions, url_prefix='/api/v1/discussions')
-# app.register_blueprint(uploads, url_prefix='/api/v1/uploads')
+app.register_blueprint(uploads, url_prefix='/api/v1/uploads')
 
 # The default URL ends in / ("my-website.com/").
 # @app.route('/')
