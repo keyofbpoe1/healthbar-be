@@ -1,13 +1,17 @@
 # this is our server!
 
 # import flask framework
-from flask import Flask, jsonify, g
+from flask import Flask, jsonify, after_this_request, g, request, flash, redirect, url_for
 # import env vars
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask_cors import CORS
 from flask_login import LoginManager
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 # run to actually import vars from file
 # load_dotenv()
@@ -18,6 +22,7 @@ import models
 from resources.users import users
 from resources.articles import articles
 from resources.discussions import discussions
+# from resources.uploads import uploads
 
 # cors allow for our db port
 # CORS(dog, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
@@ -48,36 +53,87 @@ def load_user(user_id):
     return models.User.get(models.User.id == user_id)
 
 # connect and disconnect db
-@app.before_request
-def before_request():
-    """Connect to the database before each request."""
-    g.db = models.DATABASE
-    g.db.connect()
+# @app.before_request # use this decorator to cause a function to run before reqs
+# def before_request():
+#
+#     """Connect to the db before each request"""
+#     print("you should see this before each request") # optional -- to illustrate that this code runs before each request -- similar to custom middleware in express.  you could also set it up for specific blueprints only.
+#     models.DATABASE.connect()
+#
+#     @after_this_request # use this decorator to Executes a function after this request
+#     def after_request(response):
+#         """Close the db connetion after each request"""
+#         print("you should see this after each request") # optional -- to illustrate that this code runs after each request
+#         models.DATABASE.close()
+#         return response # go ahead and send response back to client
+                      # (in our case this will be some JSON)
+# @app.before_request
+# def before_request():
+#     """Connect to the database before each request."""
+#     g.db = models.DATABASE
+#     g.db.connect()
+#
+#
+# @app.after_request
+# def after_request(response):
+#     """Close the database connection after each request."""
+#     g.db.close()
+#     return response
 
-
-@app.after_request
-def after_request(response):
-    """Close the database connection after each request."""
-    g.db.close()
-    return response
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#
+# @app.route('/upload', methods=['POST'])
+# def fileUpload():
+#     target=os.path.join(UPLOAD_FOLDER,'test_docs')
+#     if not os.path.isdir(target):
+#         os.mkdir(target)
+#     logger.info("welcome to upload`")
+#     file = request.files['file']
+#     filename = secure_filename(file.filename)
+#     destination="/".join([target, filename])
+#     file.save(destination)
+#     session['uploadFilePath']=destination
+#     response="Whatever you wish too return"
+#     return response
 
 # cors for our routes
 CORS(users, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(articles, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(discussions, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
+# CORS(uploads, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 
 # get our api on!
 # this hooks up to our router
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(articles, url_prefix='/api/v1/articles')
 app.register_blueprint(discussions, url_prefix='/api/v1/discussions')
+# app.register_blueprint(uploads, url_prefix='/api/v1/uploads')
 
 # The default URL ends in / ("my-website.com/").
 # @app.route('/')
 # def index():
 #     return 'hi'
 
+@app.before_request # use this decorator to cause a function to run before reqs
+def before_request():
+
+    """Connect to the db before each request"""
+    print("you should see this before each request") # optional -- to illustrate that this code runs before each request -- similar to custom middleware in express.  you could also set it up for specific blueprints only.
+    models.DATABASE.connect()
+
+    @after_this_request # use this decorator to Executes a function after this request
+    def after_request(response):
+        """Close the db connetion after each request"""
+        print("you should see this after each request") # optional -- to illustrate that this code runs after each request
+        models.DATABASE.close()
+        return response # go ahead and send response back to client
+                      # (in our case this will be some JSON)
+
 # Run the app when the program starts!
 if __name__ == '__main__':
     models.initialize()
     app.run(debug=DEBUG, port=PORT)
+
+if os.environ.get('FLASK_ENV') != 'development':
+    print('\non heroku!')
+    models.initialize()

@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 # import json
 # import urllib3
 from playhouse.postgres_ext import *
+from playhouse.db_url import connect
 from flask_login import UserMixin
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -18,9 +19,12 @@ load_dotenv(dotenv_path)
 DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD")
 
 # to connect to sqllite:
-DATABASE = SqliteDatabase('healthbar.sqlite')
+# DATABASE = SqliteDatabase('healthbar.sqlite')
 # to connect to postgres, use below and set up postgres db in pgadmin
 # DATABASE = PostgresqlDatabase('healthbar_db', user='postgres', password=DATABASE_PASSWORD)
+DATABASE = connect(os.environ.get('DATABASE_URL') or 'sqlite:///healthbar.sqlite')
+# DATABASE = connect('sqlite:///healthbar.sqlite')
+
 
 class User(UserMixin, Model):
     username = CharField(unique=True)
@@ -83,6 +87,7 @@ class Pin(Model):
 
 class Image(Model):
     user = ForeignKeyField(User, backref= 'avatar', null=True)
+    imgtype = CharField()
     article = ForeignKeyField(Article, backref='images', null=True)
     class Meta:
         database = DATABASE
@@ -90,7 +95,7 @@ class Image(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Article, Tag, Tagjunction, Discussion, Endorsement, Pin, Image], safe=True)
+    DATABASE.create_tables([User, Article, Discussion], safe=True)
     print("TABLES Created")
     DATABASE.close()
 

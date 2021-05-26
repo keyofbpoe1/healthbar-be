@@ -39,6 +39,8 @@ def create_discussion():
     """create and post a new discussion"""
     # get payload
     payload = request.get_json()
+    # print(payload, file=sys.stderr)
+    # print(payload, file=sys.stdout)
     # set author
     payload['author'] = current_user
     # create discussion in db
