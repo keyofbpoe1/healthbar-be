@@ -17,8 +17,13 @@ from os.path import join, dirname
 # second argument is it's import_name
 uploads = Blueprint('uploads', 'upload')
 
+#get uploaded file
+@uploads.route('/upload/<folder>/<file>', methods=['GET'])
+def file_get(folder, file):
+    return send_from_directory(f'uploads/{folder}', file)
+
 # post new upload
-@uploads.route('/upload', methods=['POST'])
+@uploads.route('/upload', methods=['GET', 'POST'])
 def fileUpload():
 
     if request.method == 'POST':
@@ -47,8 +52,3 @@ def fileUpload():
         fname = request.headers['fname']
         response=send_from_directory(f'uploads/{folder}', f'{fname}')
         return response
-
-#get uploaded file
-@uploads.route('/upload/<folder>/<file>', methods=['GET'])
-def file_get(folder, file):
-    return send_from_directory(f'uploads/{folder}', file)
