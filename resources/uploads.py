@@ -18,7 +18,7 @@ from os.path import join, dirname
 uploads = Blueprint('uploads', 'upload')
 
 # post new upload
-@uploads.route('/upload', methods=['GET', 'POST'])
+@uploads.route('/upload', methods=['POST'])
 def fileUpload():
 
     if request.method == 'POST':
@@ -48,27 +48,7 @@ def fileUpload():
         response=send_from_directory(f'uploads/{folder}', f'{fname}')
         return response
 
-# #get uploaded file
-# @uploads.route('/upload/<folder>/<file>', methods=['GET'])
-# def file_get(folder, file):
-#     # target=os.path.join(UPLOAD_FOLDER)
-#     # if not os.path.isdir(target):
-#     #     os.mkdir(target)
-#
-#     # logger.info("welcome to upload`")
-#     # file = request.files['file']
-#     # filename = secure_filename(file.filename)
-#     # # destination="/".join([target, filename])
-#     # destination=os.path.join('uploads', filename)
-#     # # print(destination)
-#     # # print(destination, file=sys.stderr)
-#     # # print(destination, file=sys.stdout)
-#     # file.save(destination)
-#     # session['uploadFilePath']=destination
-#     # response=jsonify(
-#     #     file=send_from_directory('uploads', filename),
-#     #     # url_for('fileUpload'),
-#     #     path=session['uploadFilePath'],
-#     #     status={"code": 200, "message": "Upload successfull"}
-#     # ), 200
-#     return send_from_directory(f'uploads/{folder}', file)
+#get uploaded file
+@uploads.route('/upload/<folder>/<file>', methods=['GET'])
+def file_get(folder, file):
+    return send_from_directory(f'uploads/{folder}', file)
