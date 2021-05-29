@@ -18,12 +18,12 @@ from os.path import join, dirname
 uploads = Blueprint('uploads', 'upload')
 
 #get uploaded file
-@uploads.route('/upload/<folder>/<file>', methods=['GET'])
+@uploads.route('/uploads/<folder>/<file>', methods=['GET'])
 def file_get(folder, file):
     return send_from_directory(f'uploads/{folder}', file)
 
 # post new upload
-@uploads.route('/upload', methods=['GET', 'POST'])
+@uploads.route('/upload', methods=['POST'])
 def fileUpload():
 
     if request.method == 'POST':
