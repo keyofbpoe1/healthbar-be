@@ -95,7 +95,7 @@ class Image(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Article, Discussion], safe=False)
+    DATABASE.create_tables([User, Article, Discussion], safe=True)
     print("TABLES Created")
     DATABASE.close()
 
