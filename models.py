@@ -49,6 +49,17 @@ class Article(Model):
         database = DATABASE
         table_name = 'articles_tbl'
 
+class Credential(Model):
+    user = ForeignKeyField(User, backref='credentials')
+    title = CharField()
+    issuer = CharField(null=True)
+    description = TextField(null=True)
+    link = CharField(null=True)
+    files = TextField(null=True)
+    class Meta:
+        database = DATABASE
+        table_name = 'credentials_tbl'
+
 class Tag(Model):
     tag = CharField()
     class Meta:
@@ -95,7 +106,7 @@ class Image(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Article, Discussion], safe=True)
+    DATABASE.create_tables([User, Article, Discussion, Credential], safe=True)
     print("TABLES Created")
     DATABASE.close()
 

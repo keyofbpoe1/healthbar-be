@@ -69,9 +69,11 @@ def get_one_user(id):
     user = models.User.get_by_id(id)
     #  get user's articles
     articles = [model_to_dict(article) for article in user.articles.paginate(1, 10).order_by(models.Article.id.desc())]
+    credentials= [model_to_dict(credential) for credential in user.credentials]
     return jsonify(
         data=model_to_dict(user),
         articles=articles,
+        credentials=credentials,
         status={"code": 200, "message": "Success single user"}
     ), 200
 
