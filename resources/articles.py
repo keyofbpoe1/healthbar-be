@@ -1,6 +1,7 @@
 # this is our users route!!!
 import models
 import sys
+import json
 
 from flask import Blueprint, jsonify, request
 from playhouse.shortcuts import model_to_dict
@@ -37,36 +38,44 @@ def get_user_articles(userid, page, limit):
         return jsonify(data={}, status={"code": 401, "message": "Error getting the resources"}), 200
 
 # search articles route
-@articles.route('/search/<term>/<page>/<limit>', methods=["GET"])
+@articles.route('/search/<page>/<limit>/<term>', methods=["GET"])
 def search_articles(term, page, limit):
     ## find all the articles containing our query and change each one to a dictionary into a new array
+    t_json = json.loads(term)
+    # t_query = t_json['query']
+    print(t_json, file=sys.stderr)
+    print(t_json, file=sys.stdout)
     try:
-        articles = models.Article.select().join(models.User).where(
-            (models.Article.title ** f'%{term}%') |
-            (models.Article.title ** f'*{term}*') |
-            (models.Article.body ** f'%{term}%') |
-            (models.Article.body ** f'*{term}*') |
-            (models.Article.category ** f'%{term}%') |
-            (models.Article.category ** f'*{term}*') |
-            (models.Article.author.username ** f'%{term}%') |
-            (models.Article.author.username ** f'*{term}*') |
-            (models.Article.author.email ** f'%{term}%') |
-            (models.Article.author.email ** f'*{term}*')
-        )
+        articles = models.Article.select().join(models.User)
 
+        if t_json['query']:
+            articles = articles.select().where(
+                (models.Article.title ** f'%{t_json["query"]}%') |
+                (models.Article.title ** f'*{t_json["query"]}*') |
+                (models.Article.body ** f'%{t_json["query"]}%') |
+                (models.Article.body ** f'*{t_json["query"]}*') |
+                (models.Article.category ** f'%{t_json["query"]}%') |
+                (models.Article.category ** f'*{t_json["query"]}*') |
+                (models.Article.author.username ** f'%{t_json["query"]}%') |
+                (models.Article.author.username ** f'*{t_json["query"]}*') |
+                (models.Article.author.email ** f'%{t_json["query"]}%') |
+                (models.Article.author.email ** f'*{t_json["query"]}*')
+            )
 
-        # [model_to_dict(article) for article in models.Article.select().join(models.User).where(
-        #     (models.Article.title ** f'%{term}%') |
-        #     (models.Article.title ** f'*{term}*') |
-        #     (models.Article.body ** f'%{term}%') |
-        #     (models.Article.body ** f'*{term}*') |
-        #     (models.Article.category ** f'%{term}%') |
-        #     (models.Article.category ** f'*{term}*') |
-        #     (models.Article.author.username ** f'%{term}%') |
-        #     (models.Article.author.username ** f'*{term}*') |
-        #     (models.Article.author.email ** f'%{term}%') |
-        #     (models.Article.author.email ** f'*{term}*')
-        # )]
+        if t_json['category']:
+            articles = articles.select().where(
+                models.Article.category == t_json['category']
+            )
+
+        if t_json['endorsements'] and int(t_json['endorsements']) == 1:
+            articles = articles.select().where(
+                models.Article.endorsements != None
+            )
+
+        if t_json['endorsements'] and int(t_json['endorsements']) == 0:
+            articles = articles.select().where(
+                models.Article.endorsements == None
+            )
 
         page_articles = [model_to_dict(article) for article in articles.paginate(int(page), int(limit))]
         return jsonify(data=page_articles, artlength=articles.count(), status={"code": 200, "message": "Success search articles"})
