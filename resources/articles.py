@@ -46,7 +46,7 @@ def search_articles(term, page, limit):
     print(t_json, file=sys.stderr)
     print(t_json, file=sys.stdout)
     try:
-        articles = models.Article.select().join(models.User)
+        articles = models.Article.select().join(models.User).join(models.Endorsement)
 
         if t_json['query']:
             articles = articles.select().where(
@@ -69,12 +69,12 @@ def search_articles(term, page, limit):
 
         if t_json['endorsements'] and int(t_json['endorsements']) == 1:
             articles = articles.select().where(
-                models.Article.endorsements != None
+                models.Endorsement.article == models.Article.id
             )
 
         if t_json['endorsements'] and int(t_json['endorsements']) == 0:
             articles = articles.select().where(
-                models.Article.endorsements == None
+                models.Endorsement.article != models.Article.id
             )
 
         page_articles = [model_to_dict(article) for article in articles.paginate(int(page), int(limit))]
