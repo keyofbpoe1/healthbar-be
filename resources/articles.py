@@ -80,9 +80,11 @@ def get_one_article(id):
     article = models.Article.get_by_id(id)
     # get related discussion
     discussions = [model_to_dict(discussion) for discussion in article.discussions]
+    endorsements = [model_to_dict(endorsement) for endorsement in article.endorsements]
     return jsonify(
         data=model_to_dict(article),
         discussions=discussions,
+        endorsements=endorsements,
         status={"code": 200, "message": "Success single article"}
     ), 200
 

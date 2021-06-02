@@ -85,6 +85,9 @@ class Endorsement(Model):
     endorser = ForeignKeyField(User, backref= 'endorsements')
     article = ForeignKeyField(Article, backref='endorsements')
     class Meta:
+        indexes = (
+            (("endorser_id", "article_id"), True),
+        )
         database = DATABASE
         table_name = 'endorsements_tbl'
 
@@ -106,7 +109,8 @@ class Image(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Article, Discussion, Credential], safe=True)
+    # DATABASE.drop_tables([Endorsement])
+    DATABASE.create_tables([User, Article, Discussion, Credential, Endorsement], safe=True)
     print("TABLES Created")
     DATABASE.close()
 

@@ -26,6 +26,7 @@ from resources.articles import articles
 from resources.discussions import discussions
 from resources.uploads import uploads
 from resources.credentials import credentials
+from resources.endorsements import endorsements
 
 # cors allow for our db port
 # CORS(dog, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
@@ -115,6 +116,7 @@ CORS(articles, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(discussions, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(uploads, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 CORS(credentials, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
+CORS(endorsements, origins=[os.environ.get("ORIGIN")], supports_credentials=True)
 
 # get our api on!
 # this hooks up to our router
@@ -123,6 +125,7 @@ app.register_blueprint(articles, url_prefix='/api/v1/articles')
 app.register_blueprint(discussions, url_prefix='/api/v1/discussions')
 app.register_blueprint(uploads, url_prefix='/api/v1/uploads')
 app.register_blueprint(credentials, url_prefix='/api/v1/credentials')
+app.register_blueprint(endorsements, url_prefix='/api/v1/endorsements')
 
 # The default URL ends in / ("my-website.com/").
 # @app.route('/')
