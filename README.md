@@ -107,35 +107,13 @@ Make sure you have npm installed and up to date:
 ## Usage
 
 1. Users can search/browse through entries, other users, and news from the web.
-  * sublist
-
-<details open="open">
-  <summary>User Stories</summary>
-  <ol>
-    <li>
-      Users can search/browse through entries, other users, and news from the web.
-    </li>
-    <li>
-      Users can register for an account, login to their accounts once registered, and update or delete their account information.
-      <ul>
-        <li>There are different account tiers: 1) user, 2) professional, and 3) admin</li>
-      </ul>
-    </li>
-    <li>
-      Tier 1 users can add new entries, edit/delete their own entries, and comment on other users' entries.
-    </li>
-    <li>
-      Tier 1 users can also upload their health/fitness credentials if they wish to be considered for tier 2.
-    </li>
-    <li>
-      Tier 2 users have all the capabilities of tier 1 users, plus the ability to endorse entries. Their endorsement will show on the entry and allow users to filter entries based on endorsements.
-    </li>
-    <li>
-      Tier 3 users have all the capabilities of tier 1 and 2 users, plus full admin capabilities. They can edit or delete any entry, credential, comment, or user.
-    </li>
-    <li>
-      Tier 3 users also have the ability to change users' user type (between any of the three tiers).
-    </li>
+2. Users can register for an account, login to their accounts once registered, and update or delete their account information.
+3. There are different account tiers: 1) user, 2) professional, and 3) admin.
+4. Tier 1 users can add new entries, edit/delete their own entries, and comment on other users' entries.
+5. Tier 1 users can also upload their health/fitness credentials if they wish to be considered for tier 2.
+6. Tier 2 users have all the capabilities of tier 1 users, plus the ability to endorse entries. Their endorsement will show on the entry and allow users to filter entries based on endorsements.
+7. Tier 3 users have all the capabilities of tier 1 and 2 users, plus full admin capabilities. They can edit or delete any entry, credential, comment, or user.
+8. Tier 3 users also have the ability to change users' user type (between any of the three tiers).
 
 
 
