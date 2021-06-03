@@ -79,23 +79,24 @@ Make sure you have npm installed and up to date:
 
 ### Installation
 
-1. Get a free NewsCatcher API Key at [https://newscatcherapi.com/](https://newscatcherapi.com/)
-2. Clone the repo
+1. Get a free tinyMCE API Key at [https://tiny.cloud/](https://tiny.cloud/)
+2. Get a free NewsCatcher API Key at [https://newscatcherapi.com/](https://newscatcherapi.com/)
+3. Clone the repo
    ```sh
    git clone https://github.com/your_username_/Project-Name.git
    ```
-3. Install NPM packages
+4. Install NPM packages
    ```sh
    npm install
    ```
-4. Enter the following variables in `.env`
+5. Enter the following variables in `.env`
    ```JS
    FLASK_ENV=development
    PORT=8000
    ORIGIN=http://localhost:3000
    SECRET={YourSecretKey}
    ```
-5. To spin up the database, cd into the project folder and run:
+6. To spin up the database, cd into the project folder and run:
    ```sh
    source env/Scripts/activate
    py app.py
