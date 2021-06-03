@@ -5,21 +5,7 @@
     <img src="images/hb-favicon.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
-
-  <p align="center">
-    An awesome README template to jumpstart your projects!
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
-  </p>
-</p>
+  <h3 align="center">healthBar</h3>
 
 
 
@@ -43,9 +29,7 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
 
@@ -55,7 +39,9 @@
 ## About The Project
 
 <p align="center">
-  [![healthBar Screen Shot][product-screenshot]](https://healthbar-fe.herokuapp.com/)
+  <a href="https://healthbar-fe.herokuapp.com/">
+    <img src="images/screenshot.png" alt="Screenshot">
+  </a>
 </p>
 
 There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
@@ -71,17 +57,19 @@ A list of commonly used resources that I find helpful are listed in the acknowle
 
 ### Built With
 
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+* [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+* [React](https://reactjs.org/)
 * [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-* [Laravel](https://laravel.com)
+* [tinyMCE](https://tiny.cloud)
+* [NewsCatcher](https://newscatcherapi.com/)
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
+This is the Flask/SQL backend for the healthBar app.
+It uses sqllite in development and postgres in production.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
@@ -94,7 +82,7 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+1. Get a free NewsCatcher API Key at [https://newscatcherapi.com/](https://newscatcherapi.com/)
 2. Clone the repo
    ```sh
    git clone https://github.com/your_username_/Project-Name.git
@@ -103,9 +91,17 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    npm install
    ```
-4. Enter your API in `config.js`
+4. Enter the following variables in `.env`
    ```JS
-   const API_KEY = 'ENTER YOUR API';
+   FLASK_ENV=development
+   PORT=8000
+   ORIGIN=http://localhost:3000
+   SECRET={YourSecretKey}
+   ```
+5. To spin up the database, cd into the project folder and run:
+   ```sh
+   source env/Scripts/activate
+   py app.py
    ```
 
 
@@ -113,16 +109,40 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+<details open="open">
+  <summary>User Stories</summary>
+  <ol>
+    <li>
+      Users can search/browse through entries, other users, and news from the web.
+    </li>
+    <li>
+      Users can register for an account, login to their accounts once registered, and update or delete their account information.
+      <ul>
+        <li>There are different account tiers: 1) user, 2) professional, and 3) admin</li>
+      </ul>
+    </li>
+    <li>
+      Tier 1 users can add new entries, edit/delete their own entries, and comment on other users' entries.
+    </li>
+    <li>
+      Tier 1 users can also upload their health/fitness credentials if they wish to be considered for tier 2.
+    </li>
+    <li>
+      Tier 2 users have all the capabilities of tier 1 users, plus the ability to endorse entries. Their endorsement will show on the entry and allow users to filter entries based on endorsements.
+    </li>
+    <li>
+      Tier 3 users have all the capabilities of tier 1 and 2 users, plus full admin capabilities. They can edit or delete any entry, credential, comment, or user.
+    </li>
+    <li>
+      Tier 3 users also have the ability to change users' user type (between any of the three tiers).
+    </li>
 
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/keyofbpoe1/healthbar-be/issues) for a list of proposed features (and known issues).
 
 
 
@@ -143,25 +163,11 @@ Contributions are what make the open source community such an amazing place to b
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Github: [https://github.com/keyofbpoe1](https://github.com/keyofbpoe1)
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Linkedin: [https://www.linkedin.com/in/smax-maisey/](https://www.linkedin.com/in/smax-maisey/)
 
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Pages](https://pages.github.com)
-* [Animate.css](https://daneden.github.io/animate.css)
-* [Loaders.css](https://connoratherton.com/loaders)
-* [Slick Carousel](https://kenwheeler.github.io/slick)
-* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
-* [Sticky Kit](http://leafo.net/sticky-kit)
-* [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
+Live Project Link: [https://healthbar-fe.herokuapp.com/](https://healthbar-fe.herokuapp.com/)
 
 
 
