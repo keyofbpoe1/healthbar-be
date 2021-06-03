@@ -1,7 +1,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  [![healthBar Logo][product-logo]](https://healthbar-fe.herokuapp.com/)
+  <a href="https://healthbar-fe.herokuapp.com/">
+    <img src="images/hb-favicon.png" alt="Logo" width="80" height="80">
+  </a>
 
   <h3 align="center">Best-README-Template</h3>
 
@@ -52,7 +54,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![healthBar Screen Shot][product-screenshot]](https://healthbar-fe.herokuapp.com/)
+<p align="center">
+  [![healthBar Screen Shot][product-screenshot]](https://healthbar-fe.herokuapp.com/)
+</p>
 
 There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
